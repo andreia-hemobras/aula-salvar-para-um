@@ -1,6 +1,7 @@
 package dev.andreia.aula_salvar_para_um.controllers;
 
 import dev.andreia.aula_salvar_para_um.dto.PersonDepartmentDto;
+import dev.andreia.aula_salvar_para_um.dto.PersonDto;
 import dev.andreia.aula_salvar_para_um.services.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +20,7 @@ public class PersonController {
     @Autowired
     private PersonService service;
 
-    @PostMapping
+    @PostMapping(value = "/personDepartmentDto")
     public ResponseEntity<PersonDepartmentDto> insert(@RequestBody PersonDepartmentDto dto){
         dto = service.insert(dto);
         URI uri = ServletUriComponentsBuilder
@@ -30,5 +31,17 @@ public class PersonController {
 
         return ResponseEntity.created(uri).body(dto);
 
+    }
+
+    @PostMapping(value = "/personDto")
+    public ResponseEntity<PersonDto> insert(@RequestBody PersonDto dto){
+        dto = service.insert(dto);
+        URI uri = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(dto.getId())
+                .toUri();
+
+        return ResponseEntity.created(uri).body(dto);
     }
 }
